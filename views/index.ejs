@@ -2,21 +2,39 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+<link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-  <nav>
+  <nav class="navBar">
     <div class="title">
       <h1><%= title %></h1>
     </div>
-    <ul>
+    <ul class="navLinks">
       <li><a href="/">Home</a></li>
-      <li><a href="/users">Users</a></li>
-      <li><a href="/users/new">New User</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/contact">Contact us</a></li>
     </ul>
 
+    <div class="signUp">
+      <span>Cart Place holder icon</span>
+      <a href="/signup">Sign Up</a>
 
-
+    </div>
   </nav>
+  <div class="contentContainer">
+      <h1>Welcome to our store</h1>
+      <p>Our store is the best, you can find all you need here.</p>
+      <div class="contentButtonDiv">
+        <button>Shop Now</button>
+        <button>Download App!</button>
+      </div>
+      <div class="reviewContainer">
+        Product reviews placeholder
+      </div>
+  </div>
+<footer>
+  Place holder for footer
+</footer>
+
   </body>
 </html>

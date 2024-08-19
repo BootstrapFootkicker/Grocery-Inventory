@@ -1,8 +1,48 @@
 body {
-  padding: 50px;
+  display: flex;
+    flex-direction: column;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  gap: 10px;
 }
 
 a {
   color: #00B7FF;
+}
+
+
+.navBar{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+  width: 100%;
+}
+ul{
+  list-style: none;
+}
+
+.navLinks{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.contentContainer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  outline: red solid 1px;
+}
+
+footer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+
 }

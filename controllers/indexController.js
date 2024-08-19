@@ -6,7 +6,7 @@ const pool = require("../config/db");
 exports.index = async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM products");
-    res.render("index", { title: "Home", data: result.rows });
+    res.render("index", { title: "Grocery Store", data: result.rows });
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
