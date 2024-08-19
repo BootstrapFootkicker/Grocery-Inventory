@@ -3,11 +3,36 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel='stylesheet' href='/stylesheets/productStyle.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <table>
+  <nav class="navBar">
+    <div class="title">
+      <h1><%= title %></h1>
+    </div>
+    <ul class="navLinks">
+      <li><a href="/">Home</a></li>
+      <li><a href="/products">Products</a></li>
+      <li><a href="/contact">Contact us</a></li>
+    </ul>
+
+    <div class="signUp">
+      <span>Cart Place holder icon</span>
+      <a href="/signup">Sign Up</a>
+
+    </div>
+  </nav>
+  <div class="contentContainer">
+
+    <div class="sidebar">
+        <h2>Categories</h2>
+        <ul>
+            <li><a href="/products">All</a></li>
+            <li><a href="/products?category=fruit">Fruit</a></li>
+            <li><a href="/products?category=vegetables">Vegetables</a></li>
+        </ul>
+    </div>
+    <table class="productsTable">
       <thead>
         <tr>
           <th>ID</th>
@@ -19,13 +44,14 @@
       <tbody>
         <% data.forEach(product => { %>
           <tr>
-            <td><%= product.id %></td>
-            <td><%= product.name %></td>
-            <td><%= product.price %></td>
+            <td><%= product.productid %></td>
+            <td><%= product.productname %></td>
+            <td>$<%= product.price %></td>
             <td><%= product.description %></td>
           </tr>
         <% }) %>
       </tbody>
-    </table>
+    </table></div>
+
   </body>
 </html>

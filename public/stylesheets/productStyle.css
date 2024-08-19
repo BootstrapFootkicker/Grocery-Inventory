@@ -1,0 +1,88 @@
+body {
+  display: flex;
+    flex-direction: column;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  gap: 10px;
+height: 100vh;
+}
+
+a {
+  color: #00B7FF;
+}
+
+
+.navBar{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+  width: 100%;
+}
+ul{
+  list-style: none;
+}
+
+.navLinks{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.contentContainer{
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  height:100%;
+  outline: red solid 1px;
+
+}
+
+footer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+
+}
+
+.productsTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.productsTable th, .productsTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.productsTable th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #f2f2f2;
+}
+
+.sidebar
+{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 20%;
+    padding: 10px;
+    background-color: #f1f1f1;
+    align-items: center;
+}
+
+.sidebar ul {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  text-align: center;
+  width: 100%; /* Ensure the ul takes the full width of the sidebar */
+}

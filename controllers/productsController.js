@@ -11,3 +11,8 @@ exports.products = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
+exports.productsByCategory = async (req, res) => {
+  const categoryid = req.query.categoryid;
+  // Handle the request based on the categoryid
+};
