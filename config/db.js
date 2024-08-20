@@ -37,11 +37,11 @@ const populateDB = async () => {
 
     // Insert sample data into products
     const insertProductsQuery = `
-      INSERT INTO products (productid, productname, price, description, supplierid) VALUES
-      (1, 'Apple', 0.5, 'Fresh red apple', 1),
-      (2, 'Banana', 0.3, 'Ripe yellow banana', 1),
-      (3, 'Carrot', 0.2, 'Organic carrot', 2),
-      (4, 'Tomato', 0.4, 'Juicy red tomato', 2)`;
+      INSERT INTO products (productid, productname, price, description, supplierid,categoryid) VALUES
+      (1, 'Apple', 0.5, 'Fresh red apple', 1,1),
+      (2, 'Banana', 0.3, 'Ripe yellow banana', 1,1),
+      (3, 'Carrot', 0.2, 'Organic carrot', 2,2),
+      (4, 'Tomato', 0.4, 'Juicy red tomato', 2,1)`;
     await client.query(insertProductsQuery);
 
     await client.query("COMMIT");
