@@ -1,0 +1,66 @@
+<!-- views/item.ejs -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Item Details</title>
+    <link rel='stylesheet' href='/stylesheets/itemStyle.css' />
+  </head>
+  <body>
+    <nav class="navBar">
+      <div class="title">
+        <h1>Item Details</h1>
+      </div>
+      <ul class="navLinks">
+        <li><a href="/">Home</a></li>
+        <li><a href="/products">Products</a></li>
+        <li><a href="/contact">Contact us</a></li>
+      </ul>
+      <div class="signUp">
+        <span>Cart Place holder icon</span>
+        <a href="/signup">Sign Up</a>
+      </div>
+    </nav>
+
+    <div class="contentContainer">
+
+<table class="productDetail">
+  <tr>
+    <th>Product Name</th>
+    <td><%= product.productname %></td>
+  </tr>
+  <tr>
+    <th>ID</th>
+    <td><%= product.productid %></td>
+  </tr>
+  <tr>
+    <th>Price</th>
+    <td>$<%= product.price %></td>
+  </tr>
+  <tr>
+    <th>Description</th>
+    <td><%= product.description %></td>
+  </tr>
+  <tr>
+    <th>Brand</th>
+    <td><%= product.brand %></td>
+  </tr>
+  <tr>
+    <th>Weight</th>
+    <td><%= product.sizeweight %></td>
+  </tr>
+  <tr>
+    <th>Packaging Type</th>
+    <td><%= product.packagingtype %></td>
+  </tr>
+  <tr>
+    <th>Supplier</th>
+    <td><%= product.suppliername %></td>
+  </tr>
+</table>
+    <!-- Add more product details as needed -->
+    </div>
+
+  </body>
+</html>
+
+

@@ -45,8 +45,8 @@
         <% data.forEach(product => { %>
           <tr>
             <td><%= product.productid %></td>
-            <td><%= product.productname %></td>
-            <td>$<%= product.price %></td>
+<td><a href="/products/<%= product.productid %>"><%= product.productname %></a></td>
+<td>$<%= product.price %></td>
             <td><%= product.description %></td>
           </tr>
         <% }) %>
