@@ -10,6 +10,59 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+// Create Tables
+const createDatabaseTables = async () => {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    // Create categories table
+    const createCategoriesTableQuery = `
+      CREATE TABLE IF NOT EXISTS categories (
+        categoryid SERIAL PRIMARY KEY,
+        categoryname VARCHAR(255) NOT NULL
+      )`;
+    await client.query(createCategoriesTableQuery);
+
+    // Create suppliers table
+    const createSuppliersTableQuery = `
+      CREATE TABLE IF NOT EXISTS suppliers (
+        supplierid SERIAL PRIMARY KEY,
+        suppliername VARCHAR(255) NOT NULL,
+        contactinformation VARCHAR(255),
+        leadtime VARCHAR(255),
+        minorderquantity INT
+      )`;
+    await client.query(createSuppliersTableQuery);
+
+    // Create products table
+    const createProductsTableQuery = `
+      CREATE TABLE IF NOT EXISTS products (
+        productid SERIAL PRIMARY KEY,
+        productname VARCHAR(255) NOT NULL,
+        sku VARCHAR(255) NOT NULL,
+        categoryid INT REFERENCES categories(categoryid),
+        brand VARCHAR(255),
+        description TEXT,
+        sizeweight VARCHAR(255),
+        packagingtype VARCHAR(255),
+        supplierid INT REFERENCES suppliers(supplierid),
+        price DECIMAL(10, 2)
+      )`;
+    await client.query(createProductsTableQuery);
+
+    await client.query("COMMIT");
+    console.log("Tables created successfully");
+  } catch (err) {
+    await client.query("ROLLBACK");
+    console.error("Error creating tables", err);
+  } finally {
+    client.release();
+  }
+};
+
+createDatabaseTables().catch((err) => console.error("Unexpected error", err));
+
 // Populate the database with sample data
 const populateDB = async () => {
   const client = await pool.connect();
