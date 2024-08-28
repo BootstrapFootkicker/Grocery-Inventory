@@ -23,6 +23,7 @@ exports.products = async (req, res) => {
     res.render("products", {
       title: categoryid || "Products",
       data: result.rows,
+      action: "addProductCategory()"
     });
   } catch (err) {
     console.error(err);
@@ -50,5 +51,16 @@ exports.productDetails = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send("Server Error");
+  }
+};
+
+
+// controllers/productsController.js
+exports.categoryTest = async (req, res) => {
+  try {
+    res.render('categoryForm', { title: 'Add Product Category' });
+  } catch (err) {
+    console.error('Error rendering categoryForm:', err);
+    res.status(500).send('Server Error');
   }
 };
