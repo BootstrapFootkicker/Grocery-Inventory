@@ -31,8 +31,9 @@
         <h2>Categories</h2>
         <ul>
             <li><a href="/products">All</a></li>
-            <li><a href="/products?categoryid=fruit">Fruit</a></li>
-            <li><a href="/products?categoryid=vegetables">Vegetables</a></li>
+           <% categories.forEach(category => { %>
+            <li><a href="/products/filter/<%= category.categoryname %>"><%= category.categoryname %></a></li>
+<% }) %>
     <button onclick="addProductCategory()">Add Category</button>        </ul>
     </div>
     <table class="productsTable">

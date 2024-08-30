@@ -1,29 +1,54 @@
 const express = require("express");
-
+const categoryController = require("../controllers/categoryController");
 const pool = require("../config/db");
 
 exports.products = async (req, res) => {
-  const categoryid = req.query.categoryid;
-  let query = "SELECT * FROM products";
-  let params = [];
-
-  if (categoryid) {
-    query += " WHERE categoryid = $1";
-  }
-
-  if (categoryid === "fruit") {
-    params.push(1);
-  } else if (categoryid === "vegetables") {
-    params.push(2);
-  }
-  console.log("Executing query:", query, "with parameters:", params);
+  const products = await pool.query("SELECT * FROM products");
 
   try {
-    const result = await pool.query(query, params);
+    const categories = await categoryController.getAllCategories();
     res.render("products", {
-      title: categoryid || "Products",
-      data: result.rows,
-      action: "addProductCategory()"
+      title: "Products",
+      data: products.rows,
+      categories: categories,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.fruitProducts = async (req, res) => {
+  const products = await pool.query(
+    "SELECT * FROM products WHERE categoryid = $1",
+    [1],
+  );
+
+  try {
+    const categories = await categoryController.getAllCategories();
+    res.render("products", {
+      title: "Fruit Products",
+      data: products.rows,
+      categories: categories,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.vegetableProducts = async (req, res) => {
+  const products = await pool.query(
+    "SELECT * FROM products WHERE categoryid = $1",
+    [2],
+  );
+
+  try {
+    const categories = await categoryController.getAllCategories();
+    res.render("products", {
+      title: "Vegetable Products",
+      data: products.rows,
+      categories: categories,
     });
   } catch (err) {
     console.error(err);
@@ -54,13 +79,4 @@ exports.productDetails = async (req, res) => {
   }
 };
 
-
 // controllers/productsController.js
-exports.categoryTest = async (req, res) => {
-  try {
-    res.render('categoryForm', { title: 'Add Product Category' });
-  } catch (err) {
-    console.error('Error rendering categoryForm:', err);
-    res.status(500).send('Server Error');
-  }
-};
