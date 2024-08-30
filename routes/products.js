@@ -4,6 +4,6 @@ const router = express.Router();
 
 router.get("/", productsController.products);
 router.get("/:id", productsController.productDetails);
-router.get("/filter/Fruits", productsController.fruitProducts); // Corrected path
-router.get("/filter/Vegetables", productsController.vegetableProducts);
+router.get("/filter/:categoryName", productsController.categoryProducts);
+
 module.exports = router;
