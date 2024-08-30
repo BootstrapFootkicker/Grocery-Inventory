@@ -18,6 +18,20 @@ exports.products = async (req, res) => {
   }
 };
 
+// controllers/categoryController.js
+
+exports.getCategoryIdByName = async (categoryName) => {
+  try {
+    const result = await pool.query(
+      "SELECT categoryid FROM categories WHERE categoryname = $1",
+      [categoryName],
+    );
+    return result.rows[0]?.categoryid || null;
+  } catch (err) {
+    console.error("Error fetching category ID from database:", err);
+    throw err;
+  }
+};
 exports.fruitProducts = async (req, res) => {
   const products = await pool.query(
     "SELECT * FROM products WHERE categoryid = $1",
@@ -38,12 +52,23 @@ exports.fruitProducts = async (req, res) => {
 };
 
 exports.vegetableProducts = async (req, res) => {
-  const products = await pool.query(
-    "SELECT * FROM products WHERE categoryid = $1",
-    [2],
-  );
-
   try {
+    const vegetablesCategoryIdResult = await pool.query(
+      "SELECT categoryid FROM categories WHERE categoryname = $1",
+      ["Vegetables"],
+    );
+
+    const vegetablesCategoryId = vegetablesCategoryIdResult.rows[0]?.categoryid;
+
+    if (!vegetablesCategoryId) {
+      return res.status(404).send("Vegetables category not found");
+    }
+
+    const products = await pool.query(
+      "SELECT * FROM products WHERE categoryid = $1",
+      [vegetablesCategoryId],
+    );
+
     const categories = await categoryController.getAllCategories();
     res.render("products", {
       title: "Vegetable Products",

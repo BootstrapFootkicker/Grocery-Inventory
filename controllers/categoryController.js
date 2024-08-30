@@ -1,6 +1,6 @@
 const pool = require("../config/db");
 
-exports.categoryTest = async (req, res) => {
+exports.categoryForm = async (req, res) => {
   try {
     res.render("categoryForm", { title: "Add Product Category" });
   } catch (err) {
@@ -10,11 +10,14 @@ exports.categoryTest = async (req, res) => {
 };
 
 exports.addCategoryToDB = async (req, res) => {
-  const { categoryname } = req.body;
+  const { categoryName } = req.body;
+  console.log("Received categoryName:", categoryName); // Add this line for debugging
   try {
-    await pool.query("INSERT INTO categories (categoryname) VALUES ($1)", [
-      categoryname,
-    ]);
+    const result = await pool.query(
+      "INSERT INTO categories (categoryname) VALUES ($1) RETURNING *",
+      [categoryName],
+    );
+    console.log("Inserted category:", result.rows[0]); // Add this line for debugging
     res.redirect("/products");
   } catch (err) {
     console.error("Error adding category to database:", err);

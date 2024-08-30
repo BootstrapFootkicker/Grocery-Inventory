@@ -16,6 +16,8 @@ const createDatabaseTables = async () => {
   try {
     await client.query("BEGIN");
 
+    const dropTablesQuery = `DROP TABLE IF EXISTS products, categories, suppliers`;
+    await client.query(dropTablesQuery);
     // Create categories table
     const createCategoriesTableQuery = `
       CREATE TABLE IF NOT EXISTS categories (
@@ -61,8 +63,6 @@ const createDatabaseTables = async () => {
   }
 };
 
-createDatabaseTables().catch((err) => console.error("Unexpected error", err));
-
 // Populate the database with sample data
 const populateDB = async () => {
   const client = await pool.connect();
@@ -76,37 +76,47 @@ const populateDB = async () => {
 
     // Insert sample data into categories
     const insertCategoriesQuery = `
-  INSERT INTO categories (categoryid, categoryname) VALUES
-  (1, 'Fruits'),
-  (2, 'Vegetables')`;
+      INSERT INTO categories (categoryname) VALUES
+      ('Fruits'),
+      ('Vegetables')`;
     await client.query(insertCategoriesQuery);
 
     // Insert sample data into suppliers
     const insertSuppliersQuery = `
-  INSERT INTO suppliers (supplierid, suppliername, contactinformation, leadtime, minorderquantity) VALUES
-  (1, 'Supplier A', '123-456-7890', '2 days', 100),
-  (2, 'Supplier B', '987-654-3210', '3 days', 200)`;
+      INSERT INTO suppliers (suppliername, contactinformation, leadtime, minorderquantity) VALUES
+      ('Supplier A', '123-456-7890', '2 days', 100),
+      ('Supplier B', '987-654-3210', '3 days', 200)`;
     await client.query(insertSuppliersQuery);
 
     // Insert sample data into products
     const insertProductsQuery = `
-  INSERT INTO products (productid, productname, sku, categoryid, brand, description, sizeweight, packagingtype,supplierid,price) VALUES
-  (1, 'Apple', 'SKU001', 1, 'Brand A', 'Fresh red apple', '1 lb', 'Bag',1,1.99),
-  (2, 'Banana', 'SKU002', 1, 'Brand B', 'Ripe yellow banana', '1 lb', 'Bunch',1,0.99),
-  (3, 'Carrot', 'SKU003', 2, 'Brand C', 'Organic carrot', '1 lb', 'Bag',2,1.49),
-  (4, 'Tomato', 'SKU004', 2, 'Juicy red tomato', 'Brand D', '1 lb', 'Box',2,2.49)`;
+      INSERT INTO products (categoryid,supplierid,productname, sku, brand, description, sizeweight, packagingtype, price) VALUES
+      (1,1,'Apple', 'SKU001',  'Brand A', 'Fresh red apple', '1 lb', 'Bag',  1.99),
+      (1,1,'Banana', 'SKU002',  'Brand B', 'Ripe yellow banana', '1 lb', 'Bunch',  0.99),
+      (2,2,'Carrot', 'SKU003',  'Brand C', 'Organic carrot', '1 lb', 'Bag',  1.49),
+      (1,2,'Tomato', 'SKU004',  'Juicy red tomato', 'Brand D', '1 lb', 'Box',  2.49)`;
     await client.query(insertProductsQuery);
 
     await client.query("COMMIT");
     console.log("Database populated successfully");
   } catch (err) {
     await client.query("ROLLBACK");
-    console.error("Error populating database", err);
+    console.error("Error populating database", err.message, err.stack);
   } finally {
     client.release();
   }
 };
 
-populateDB().catch((err) => console.error("Unexpected error", err));
+// Initializes the database
+const initDB = async () => {
+  try {
+    await createDatabaseTables();
+    await populateDB();
+  } catch (err) {
+    console.error("Error initializing database", err);
+  }
+};
+
+initDB().catch((err) => console.error("Unexpected error", err));
 
 module.exports = pool;

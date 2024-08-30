@@ -15,9 +15,7 @@
       <li><a href="/">Home</a></li>
       <li><a href="/products">Products</a></li>
       <li><a href="/contact">Contact us</a></li>
-<!--        //for each category add link that goes to category page-->
-        <li>Add Category</li>
-    </ul>
+</ul>
 
     <div class="signUp">
       <span>Cart Place holder icon</span>
@@ -34,7 +32,8 @@
            <% categories.forEach(category => { %>
             <li><a href="/products/filter/<%= category.categoryname %>"><%= category.categoryname %></a></li>
 <% }) %>
-    <button onclick="addProductCategory()">Add Category</button>        </ul>
+         <li><button onclick="window.location.href='/addCategory'">Add Category</button></li>
+        </ul>
     </div>
     <table class="productsTable">
       <thead>
