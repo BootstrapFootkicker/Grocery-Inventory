@@ -23,41 +23,6 @@ exports.products = async (req, res) => {
   }
 };
 
-// Controller to handle fetching and rendering products by category
-exports.categoryProducts = async (req, res) => {
-  const categoryName = req.params.categoryName;
-
-  try {
-    // Get the category ID by category name
-    const categoryId =
-      await categoryController.getCategoryIdByName(categoryName);
-
-    // If category ID is not found, send a 404 response
-    if (!categoryId) {
-      return res.status(404).send(`${categoryName} category not found`);
-    }
-
-    // Fetch products by category ID
-    const products = await pool.query(
-      "SELECT * FROM products WHERE categoryid = $1",
-      [categoryId],
-    );
-
-    // Fetch all categories from the database
-    const categories = await categoryController.getAllCategories();
-
-    // Render the products page with the fetched products and categories
-    res.render("products", {
-      title: `${categoryName} Products`,
-      data: products.rows,
-      categories: categories,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
-  }
-};
-
 // Controller to handle fetching and rendering product details by product ID
 exports.productDetails = async (req, res) => {
   const productId = req.params.id;

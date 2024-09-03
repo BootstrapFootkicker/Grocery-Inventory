@@ -30,8 +30,10 @@
         <ul>
             <li><a href="/products">All</a></li>
            <% categories.forEach(category => { %>
-            <li><a href="/products/filter/<%= category.categoryname %>"><%= category.categoryname %></a></li>
-<% }) %>
+<li>
+  <a href="/categories/<%= category.categoryname %>"><%= category.categoryname %></a>
+  <button onclick="deleteCategory(this.id)" id="<%= category.categoryname %>">delete</button>
+</li><% }) %>
          <li><button onclick="window.location.href='/addCategory'">Add Category</button></li>
         </ul>
     </div>
@@ -48,7 +50,6 @@
         <% data.forEach(product => { %>
           <tr>
             <td><%= product.productid %></td>
-<td><a href="/products/<%= product.productid %>"><%= product.productname %></a></td>
 <td>$<%= product.price %></td>
             <td><%= product.description %></td>
           </tr>

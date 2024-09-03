@@ -17,8 +17,6 @@ exports.getCategoryIdByName = async (categoryName) => {
       "SELECT categoryid FROM categories WHERE categoryname = $1",
       [categoryName],
     );
-    // Use optional chaining to safely access the categoryid property of the first row in the result set.
-    // If the result set is empty, return null instead of causing an error.
     return result.rows[0]?.categoryid || null;
   } catch (err) {
     console.error("Error fetching category ID from database:", err);
@@ -29,16 +27,37 @@ exports.getCategoryIdByName = async (categoryName) => {
 // Add a new category to the database
 exports.addCategoryToDB = async (req, res) => {
   const { categoryName } = req.body;
-  console.log("Received categoryName:", categoryName); // Debugging: Log received category name
+  console.log("Received categoryName:", categoryName);
   try {
     const result = await pool.query(
       "INSERT INTO categories (categoryname) VALUES ($1) RETURNING *",
       [categoryName],
     );
-    console.log("Inserted category:", result.rows[0]); // Debugging: Log inserted category
+    console.log("Inserted category:", result.rows[0]);
     res.redirect("/products");
   } catch (err) {
     console.error("Error adding category to database:", err);
+    res.status(500).send("Server Error");
+  }
+};
+
+exports.removeCategoryFromDB = async (req, res) => {
+  const { categoryId } = req.params;
+  try {
+    const miscCategoryId = await exports.getCategoryIdByName("MISC");
+
+    await pool.query(
+      "UPDATE products SET categoryid = $1 WHERE categoryid = $2",
+      [miscCategoryId, categoryId],
+    );
+
+    await pool.query("DELETE FROM categories WHERE categoryid = $1", [
+      categoryId,
+    ]);
+
+    res.redirect("/products");
+  } catch (err) {
+    console.error("Error deleting category from database:", err);
     res.status(500).send("Server Error");
   }
 };
@@ -51,5 +70,34 @@ exports.getAllCategories = async () => {
   } catch (err) {
     console.error("Error fetching categories from database:", err);
     throw err;
+  }
+};
+
+// Fetch and render products by category
+exports.categoryProducts = async (req, res) => {
+  const categoryName = req.params.categoryName;
+
+  try {
+    const categoryId = await exports.getCategoryIdByName(categoryName);
+
+    if (!categoryId) {
+      return res.status(404).send(`${categoryName} category not found`);
+    }
+
+    const products = await pool.query(
+      "SELECT * FROM products WHERE categoryid = $1",
+      [categoryId],
+    );
+
+    const categories = await exports.getAllCategories();
+
+    res.render("products", {
+      title: `${categoryName} Products`,
+      data: products.rows,
+      categories: categories,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
   }
 };

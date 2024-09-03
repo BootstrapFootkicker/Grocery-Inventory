@@ -78,7 +78,8 @@ const populateDB = async () => {
     const insertCategoriesQuery = `
       INSERT INTO categories (categoryname) VALUES
       ('Fruits'),
-      ('Vegetables')`;
+      ('Vegetables'),
+        ('MISC')`;
     await client.query(insertCategoriesQuery);
 
     // Insert sample data into suppliers
