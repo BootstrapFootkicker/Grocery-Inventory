@@ -42,20 +42,39 @@ exports.addCategoryToDB = async (req, res) => {
 };
 
 exports.removeCategoryFromDB = async (req, res) => {
-  const { categoryId } = req.params;
-  try {
-    const miscCategoryId = await exports.getCategoryIdByName("MISC");
+  const { categoryName } = req.params;
+  console.log("Received categoryName:", categoryName);
 
-    await pool.query(
+  try {
+    const categoryId = await exports.getCategoryIdByName(categoryName);
+    console.log("Category ID:", categoryId);
+
+    if (!categoryId) {
+      console.error("Category not found");
+      return res.status(404).send("Category not found");
+    }
+
+    const miscCategoryId = await exports.getCategoryIdByName("MISC");
+    console.log("MISC categoryId:", miscCategoryId);
+
+    if (!miscCategoryId) {
+      console.error("MISC category not found");
+      return res.status(404).send("MISC category not found");
+    }
+
+    const updateResult = await pool.query(
       "UPDATE products SET categoryid = $1 WHERE categoryid = $2",
       [miscCategoryId, categoryId],
     );
+    console.log("Updated products:", updateResult.rowCount);
 
-    await pool.query("DELETE FROM categories WHERE categoryid = $1", [
+    const deleteResult = await pool.query("DELETE FROM categories WHERE categoryid = $1", [
       categoryId,
     ]);
+    console.log("Deleted category:", deleteResult.rowCount);
 
-    res.redirect("/products");
+    // Send success response instead of redirecting
+    res.status(200).send("Category deleted successfully");
   } catch (err) {
     console.error("Error deleting category from database:", err);
     res.status(500).send("Server Error");

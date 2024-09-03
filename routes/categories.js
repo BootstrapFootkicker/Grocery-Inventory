@@ -4,6 +4,6 @@ const router = express.Router();
 
 // Add this route to the existing file
 router.get("/:categoryName", categoryController.categoryProducts);
-router.delete("/:categoryId", categoryController.removeCategoryFromDB);
+router.delete("/:categoryName", categoryController.removeCategoryFromDB);
 
 module.exports = router;
