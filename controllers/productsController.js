@@ -23,6 +23,10 @@ exports.products = async (req, res) => {
   }
 };
 
+exports.productForm = async (req, res) => {
+    const categories = await categoryController.getAllCategories();
+    res.render("productForm", { title: "Add Product", categories: categories });
+}
 // Controller to handle fetching and rendering product details by product ID
 exports.productDetails = async (req, res) => {
   const productId = req.params.id;
@@ -50,3 +54,32 @@ exports.productDetails = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
+
+
+exports.addProductToDB = async (req, res) => {
+    const { productname, price, category, supplierName } = req.body;
+
+    const categoryid = await categoryController.getCategoryIdByName(category);
+   // const supplierid = await categoryController.getSupplierIdByName(supplierName);
+    const supplierid = 2;
+    if (!categoryid) {
+        console.error("Category not found");
+        return res.status(404).send("Category not found");
+    }
+
+
+
+    try {
+        // Insert a new product into the database
+        const result = await pool.query(
+        "INSERT INTO products (productname, price, categoryid, supplierid) VALUES ($1, $2, $3, $4) RETURNING *",
+        [productname, price, categoryid, supplierid],
+        );
+
+        console.log("Inserted product:", result.rows[0]);
+        res.redirect("/products");
+    } catch (err) {
+        console.error("Error adding product to database:", err);
+        res.status(500).send("Server Error");
+    }
+}

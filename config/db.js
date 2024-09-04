@@ -9,7 +9,8 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
 });
-
+//todo: Make SKU automatic and unique
+//todo: fill in the rest of the fields for add product
 // Create Tables
 const createDatabaseTables = async () => {
   const client = await pool.connect();

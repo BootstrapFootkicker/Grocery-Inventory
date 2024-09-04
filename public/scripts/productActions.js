@@ -25,3 +25,4 @@ async function deleteCategory(categoryName) {
     console.error("Error deleting category:", err);
   }
 }
+

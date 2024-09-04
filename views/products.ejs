@@ -37,7 +37,8 @@
          <li><button onclick="window.location.href='/addCategory'">Add Category</button></li>
         </ul>
     </div>
-    <table class="productsTable">
+<button onclick="window.location.href='/addProduct'">Add Product</button>
+      <table class="productsTable">
       <thead>
         <tr>
           <th>ID</th>
@@ -51,9 +52,9 @@
           <tr>
             <td><%= product.productid %></td>
         <td>$<%= product.price %></td>
-<td><a href="/products/<%= product.productid %>">
+        <td><a href="/products/<%= product.productid %>">
         <%= product.productname %></a></td>
-<td><%= product.description %></td>
+        <td><%= product.description %></td>
           </tr>
         <% }) %>
       </tbody>
