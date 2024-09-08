@@ -1,40 +1,47 @@
 const express = require("express");
+const brandController = require("../controllers/brandController");
 const categoryController = require("../controllers/categoryController");
+const supplierController = require("../controllers/supplierController");
 const pool = require("../config/db");
 
 // Controller to handle fetching and rendering all products
 exports.products = async (req, res) => {
   try {
-    // Fetch all products from the database
     const products = await pool.query("SELECT * FROM products");
-
-    // Fetch all categories from the database
     const categories = await categoryController.getAllCategories();
-
-    // Render the products page with the fetched products and categories
     res.render("products", {
       title: "Products",
       data: products.rows,
       categories: categories,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    console.error("Error in products function:", err);
+    res.status(500).send("Server Error in products function");
   }
 };
 
 exports.productForm = async (req, res) => {
+  try {
     const categories = await categoryController.getAllCategories();
-    res.render("productForm", { title: "Add Product", categories: categories });
-}
-// Controller to handle fetching and rendering product details by product ID
+    const suppliers = await supplierController.getAllSuppliers();
+    const brands = await brandController.getAllBrands();
+    res.render("productForm", {
+      title: "Add Product",
+      categories: categories,
+      suppliers: suppliers,
+      brands: brands,
+    });
+  } catch (err) {
+    console.error("Error in productForm function:", err);
+    res.status(500).send("Server Error in productForm function");
+  }
+};
+
 exports.productDetails = async (req, res) => {
   const productId = req.params.id;
 
   try {
-    // Fetch product details and supplier name by product ID
     const result = await pool.query(
-      // SQL query to select all columns from the products table (aliased as p) and the suppliername column from the suppliers table (aliased as s)
       `SELECT p.*, s.suppliername
        FROM products p
        JOIN suppliers s ON p.supplierid = s.supplierid
@@ -42,44 +49,74 @@ exports.productDetails = async (req, res) => {
       [productId],
     );
 
-    // If product is found, render the item page with product details
     if (result.rows.length > 0) {
       res.render("item", { title: "Product Details", product: result.rows[0] });
     } else {
-      // If product is not found, send a 404 response
       res.status(404).send("Product not found");
     }
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
+    console.error("Error in productDetails function:", err);
+    res.status(500).send("Server Error in productDetails function");
   }
 };
 
-
 exports.addProductToDB = async (req, res) => {
-    const { productname, price, category, supplierName } = req.body;
+  console.log("addProductToDB function called");
 
-    const categoryid = await categoryController.getCategoryIdByName(category);
-   // const supplierid = await categoryController.getSupplierIdByName(supplierName);
-    const supplierid = 2;
+  const {
+    productname,
+    price,
+    category,
+    supplierName,
+    brand,
+    sizeweight,
+    packagingtype,
+    description,
+  } = req.body;
+
+  try {
+    // Fetch category ID and supplier ID
+    const categoryid = category;
+    const supplierid =
+      await supplierController.getSupplierIdByName(supplierName);
+
+    //Check if category ID and supplier ID are found
     if (!categoryid) {
-        console.error("Category not found");
-        return res.status(404).send("Category not found");
+      console.error("Category not found in addProductToDB function");
+      return res
+        .status(404)
+        .send("Category not found in addProductToDB function");
     }
 
-
-
-    try {
-        // Insert a new product into the database
-        const result = await pool.query(
-        "INSERT INTO products (productname, price, categoryid, supplierid) VALUES ($1, $2, $3, $4) RETURNING *",
-        [productname, price, categoryid, supplierid],
-        );
-
-        console.log("Inserted product:", result.rows[0]);
-        res.redirect("/products");
-    } catch (err) {
-        console.error("Error adding product to database:", err);
-        res.status(500).send("Server Error");
+    if (!supplierid) {
+      console.error("Supplier not found in addProductToDB function");
+      return res
+        .status(404)
+        .send("Supplier not found in addProductToDB function");
     }
-}
+
+    console.log("Category ID:", categoryid);
+    console.log("Supplier ID:", supplierid);
+
+    // Insert the product into the database
+    const result = await pool.query(
+      "INSERT INTO products (productname, price, categoryid, supplierid, brand, sizeweight, packagingtype,description) VALUES ($1, $2, $3, $4, $5, $6, $7,$8) RETURNING *",
+      [
+        productname,
+        price,
+        categoryid,
+        supplierid,
+        brand,
+        sizeweight,
+        packagingtype,
+        description,
+      ],
+    );
+
+    console.log("Inserted product:", result.rows[0]);
+    res.redirect("/products");
+  } catch (err) {
+    console.error("Error in addProductToDB function:", err);
+    res.status(500).send("Server Error in addProductToDB function");
+  }
+};

@@ -5,21 +5,28 @@ exports.categoryForm = async (req, res) => {
   try {
     res.render("categoryForm", { title: "Add Product Category" });
   } catch (err) {
-    console.error("Error rendering categoryForm:", err);
+    console.error("Error in categoryForm:", err);
     res.status(500).send("Server Error");
   }
 };
 
 // Get the category ID by category name
+// controllers/categoryController.js
 exports.getCategoryIdByName = async (categoryName) => {
   try {
     const result = await pool.query(
       "SELECT categoryid FROM categories WHERE categoryname = $1",
       [categoryName],
     );
-    return result.rows[0]?.categoryid || null;
+    if (result.rows.length > 0) {
+      console.log("Category ID found:", result.rows[0].categoryid);
+      return result.rows[0].categoryid;
+    } else {
+      console.log("Category not found:", categoryName);
+      return null;
+    }
   } catch (err) {
-    console.error("Error fetching category ID from database:", err);
+    console.error("Error in getCategoryIdByName function:", err);
     throw err;
   }
 };
@@ -36,7 +43,7 @@ exports.addCategoryToDB = async (req, res) => {
     console.log("Inserted category:", result.rows[0]);
     res.redirect("/products");
   } catch (err) {
-    console.error("Error adding category to database:", err);
+    console.error("Error in addCategoryToDB:", err);
     res.status(500).send("Server Error");
   }
 };
@@ -50,7 +57,7 @@ exports.removeCategoryFromDB = async (req, res) => {
     console.log("Category ID:", categoryId);
 
     if (!categoryId) {
-      console.error("Category not found");
+      console.error("Error in removeCategoryFromDB: Category not found");
       return res.status(404).send("Category not found");
     }
 
@@ -58,7 +65,7 @@ exports.removeCategoryFromDB = async (req, res) => {
     console.log("MISC categoryId:", miscCategoryId);
 
     if (!miscCategoryId) {
-      console.error("MISC category not found");
+      console.error("Error in removeCategoryFromDB: MISC category not found");
       return res.status(404).send("MISC category not found");
     }
 
@@ -68,15 +75,16 @@ exports.removeCategoryFromDB = async (req, res) => {
     );
     console.log("Updated products:", updateResult.rowCount);
 
-    const deleteResult = await pool.query("DELETE FROM categories WHERE categoryid = $1", [
-      categoryId,
-    ]);
+    const deleteResult = await pool.query(
+      "DELETE FROM categories WHERE categoryid = $1",
+      [categoryId],
+    );
     console.log("Deleted category:", deleteResult.rowCount);
 
     // Send success response instead of redirecting
     res.status(200).send("Category deleted successfully");
   } catch (err) {
-    console.error("Error deleting category from database:", err);
+    console.error("Error in removeCategoryFromDB:", err);
     res.status(500).send("Server Error");
   }
 };
@@ -87,7 +95,7 @@ exports.getAllCategories = async () => {
     const result = await pool.query("SELECT * FROM categories");
     return result.rows;
   } catch (err) {
-    console.error("Error fetching categories from database:", err);
+    console.error("Error in getAllCategories:", err);
     throw err;
   }
 };
@@ -116,7 +124,7 @@ exports.categoryProducts = async (req, res) => {
       categories: categories,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Error in categoryProducts:", err);
     res.status(500).send("Server Error");
   }
 };
