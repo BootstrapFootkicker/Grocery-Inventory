@@ -1,7 +1,10 @@
 // config/db.js
 const { Pool } = require("pg");
 require("dotenv").config();
-
+//todo Style the app
+//todo Find a way to add link functionality to everypage without rewriting the code, Maybe a controller?
+//todo Add a way to change product details
+//todo Add a way to change category details
 const pool = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,

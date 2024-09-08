@@ -32,7 +32,9 @@
            <% categories.forEach(category => { %>
 <li>
   <a href="/categories/<%= category.categoryname %>"><%= category.categoryname %></a>
+<% if (category.categoryname !== "MISC") { %>
   <button onclick="deleteCategory(this.id)" id="<%= category.categoryname %>">delete</button>
+<% } %>
 </li><% }) %>
          <li><button onclick="window.location.href='/addCategory'">Add Category</button></li>
         </ul>
